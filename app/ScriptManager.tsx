@@ -60,12 +60,12 @@ export default function ScriptManager() {
       const encodedAuthor = encodeURIComponent(script.script_author)
       const res = await fetch(`/api/getscript?name=${encodedName}&author=${encodedAuthor}`)
       if (!res.ok) throw new Error('Failed to load script')
-      const data = await res.json()
+      const text = await res.text()
 
-      setScriptName(data.name || script.script_name)
+      setScriptName(script.script_name)
       setVersion(script.version || '')
       setDesc(script.desc || '')
-      setContent(data.script || '')
+      setContent(text)
       setEditing(true)
     } catch (_err) {
       setStatus({ type: 'error', message: 'Failed to load script content' })
