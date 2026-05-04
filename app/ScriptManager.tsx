@@ -87,6 +87,33 @@ export default function ScriptManager() {
     // TODO: implement download logic
   }
 
+  const [dragging, setDragging] = useState(false)
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault()
+    setDragging(true)
+  }
+
+  function handleDragLeave() {
+    setDragging(false)
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (!file || !file.name.endsWith('.bsh')) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const text = ev.target?.result
+      if (typeof text === 'string') {
+        setContent(text)
+        if (!scriptName) setScriptName(file.name.replace('.bsh', ''))
+      }
+    }
+    reader.readAsText(file)
+  }
+
   async function handleSubmit(e?: FormEvent) {
     if (e) e.preventDefault()
 
@@ -265,11 +292,19 @@ export default function ScriptManager() {
             </div>
             <div className="form-group">
               <label>Content</label>
-              <textarea
-                value={content}
-                onChange={e => setContent(e.target.value)}
-                placeholder="Paste your script here..."
-              />
+              <div
+                className={`drop-zone ${dragging ? 'dragging' : ''}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <textarea
+                  value={content}
+                  onChange={e => setContent(e.target.value)}
+                  placeholder="Paste your script here, or drop a .bsh file..."
+                />
+                {dragging && <div className="drop-overlay">Drop .bsh file here</div>}
+              </div>
             </div>
             <div className="btn-row">
               <button type="submit" className="btn btn-primary" disabled={loading}>

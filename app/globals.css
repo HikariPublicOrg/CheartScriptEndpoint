@@ -94,6 +94,29 @@ header h1 {
   resize: vertical;
 }
 
+.drop-zone {
+  position: relative;
+}
+
+.drop-zone textarea {
+  width: 100%;
+}
+
+.drop-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37, 99, 235, 0.15);
+  border: 2px dashed #2563eb;
+  border-radius: 8px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
