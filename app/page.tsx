@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { ClientProvider } from './ClientContext'
 import ScriptManager from './ScriptManager'
+import HealthCheck from './HealthCheck'
 
 export default async function Home() {
   const cookieStore = await cookies()
@@ -11,13 +13,17 @@ export default async function Home() {
   }
 
   return (
-    <div className="container">
-      <script dangerouslySetInnerHTML={{ __html: 'console.log("page script loaded")' }} />
-      <header>
-        <h1>Cheart Script</h1>
-        <span className="user-badge">{username}</span>
-      </header>
-      <ScriptManager />
-    </div>
+    <ClientProvider>
+      <div className="container">
+        <header>
+          <h1>Cheart Script</h1>
+          <div className="header-badges">
+            <span className="user-badge">{username}</span>
+            <HealthCheck />
+          </div>
+        </header>
+        <ScriptManager />
+      </div>
+    </ClientProvider>
   )
 }

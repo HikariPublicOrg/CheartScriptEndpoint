@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, FormEvent } from 'react'
+import { useClient } from './ClientContext'
 
 interface Script {
   script_name: string
@@ -12,10 +13,14 @@ interface Script {
 
 type Tab = 'browse' | 'mine'
 
+const BUCKET_BASE = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/cheart-script`
+
 export default function ScriptManager() {
+  const { online } = useClient()
   const [tab, setTab] = useState<Tab>('browse')
   const [allScripts, setAllScripts] = useState<Script[]>([])
   const [myScripts, setMyScripts] = useState<Script[]>([])
+  const [installedScripts, setInstalledScripts] = useState<Set<string>>(new Set())
   const [scriptName, setScriptName] = useState('')
   const [version, setVersion] = useState('')
   const [desc, setDesc] = useState('')
@@ -23,6 +28,7 @@ export default function ScriptManager() {
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [dragging, setDragging] = useState(false)
 
   useEffect(() => {
     fetchAllScripts()
@@ -31,6 +37,10 @@ export default function ScriptManager() {
   useEffect(() => {
     if (tab === 'mine') fetchMyScripts()
   }, [tab])
+
+  useEffect(() => {
+    if (online && tab === 'browse') checkInstalled(allScripts)
+  }, [online, tab, allScripts])
 
   async function fetchAllScripts() {
     try {
@@ -49,6 +59,63 @@ export default function ScriptManager() {
       if (Array.isArray(data)) setMyScripts(data)
     } catch (err) {
       console.error('Failed to fetch scripts:', err)
+    }
+  }
+
+  async function checkInstalled(scripts: Script[]) {
+    const installed = new Set<string>()
+    await Promise.all(
+      scripts.map(async (s) => {
+        try {
+          const res = await fetch(`/api/client/check-script?name=${encodeURIComponent(s.script_name)}.bsh`)
+          const data = await res.json()
+          if (data.exists) installed.add(s.script_name)
+        } catch {
+          // ignore
+        }
+      })
+    )
+    setInstalledScripts(installed)
+  }
+
+  async function handleInstall(script: Script) {
+    setLoading(true)
+    setStatus(null)
+    try {
+      const url = `${BUCKET_BASE}/${encodeURIComponent(script.script_author)}/${encodeURIComponent(script.script_name)}.bsh`
+      const res = await fetch(`/api/client/add-script?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(script.script_name)}.bsh`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Install failed')
+
+      await fetch('/api/client/reload-script')
+      setInstalledScripts(prev => new Set(prev).add(script.script_name))
+      setStatus({ type: 'success', message: `Installed "${script.script_name}"` })
+    } catch (err) {
+      setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Install failed' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleDelete(script: Script) {
+    setLoading(true)
+    setStatus(null)
+    try {
+      const res = await fetch(`/api/client/delete-script?name=${encodeURIComponent(script.script_name)}.bsh`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Delete failed')
+
+      await fetch('/api/client/reload-script')
+      setInstalledScripts(prev => {
+        const next = new Set(prev)
+        next.delete(script.script_name)
+        return next
+      })
+      setStatus({ type: 'success', message: `Deleted "${script.script_name}"` })
+    } catch (err) {
+      setStatus({ type: 'error', message: err instanceof Error ? err.message : 'Delete failed' })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -101,12 +168,6 @@ export default function ScriptManager() {
       setStatus({ type: 'error', message: 'Download failed' })
     }
   }
-
-  function handleInstall(_script: Script) {
-    // TODO: implement install logic
-  }
-
-  const [dragging, setDragging] = useState(false)
 
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault()
@@ -224,14 +285,27 @@ export default function ScriptManager() {
                     >
                       Download
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-small btn-install"
-                      onClick={() => handleInstall(s)}
-                      disabled={loading}
-                    >
-                      Install
-                    </button>
+                    {online && (
+                      installedScripts.has(s.script_name) ? (
+                        <button
+                          type="button"
+                          className="btn btn-small btn-delete"
+                          onClick={() => handleDelete(s)}
+                          disabled={loading}
+                        >
+                          Delete
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-small btn-install"
+                          onClick={() => handleInstall(s)}
+                          disabled={loading}
+                        >
+                          Install
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
               ))}

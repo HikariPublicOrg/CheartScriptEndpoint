@@ -32,6 +32,12 @@ header h1 {
   color: #fff;
 }
 
+.header-badges {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .user-badge {
   font-size: 14px;
   color: #888;
@@ -39,6 +45,25 @@ header h1 {
   padding: 6px 14px;
   border-radius: 20px;
   border: 1px solid #333;
+}
+
+.health-badge {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #333;
+}
+
+.health-badge.online {
+  color: #22c55e;
+  background: #052e16;
+  border-color: #166534;
+}
+
+.health-badge.offline {
+  color: #666;
+  background: #1a1a1a;
+  border-color: #333;
 }
 
 .form-card {
@@ -295,4 +320,15 @@ header h1 {
 .btn-install:hover {
   background: #14532d;
   color: #4ade80;
+}
+
+.btn-delete {
+  background: #7f1d1d;
+  color: #ef4444;
+  border-color: #7f1d1d;
+}
+
+.btn-delete:hover {
+  background: #991b1b;
+  color: #f87171;
 }
