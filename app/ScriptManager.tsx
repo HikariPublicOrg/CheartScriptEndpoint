@@ -89,8 +89,8 @@ export default function ScriptManager() {
       const encodedAuthor = encodeURIComponent(script.script_author)
       const res = await fetch(`/api/getscript?name=${encodedName}&author=${encodedAuthor}`)
       if (!res.ok) throw new Error('Failed to fetch script')
-      const data = await res.json()
-      const blob = new Blob([data.script], { type: 'text/plain' })
+      const text = await res.text()
+      const blob = new Blob([text], { type: 'text/plain' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
