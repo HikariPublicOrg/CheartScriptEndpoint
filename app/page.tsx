@@ -1,26 +1,23 @@
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation';
+import { redirect } from 'next/navigation'
+import ScriptManager from './ScriptManager'
 
 export default async function Home() {
   const cookieStore = await cookies()
   const username = cookieStore.get('username')?.value
 
-  if(!username) {
+  if (!username) {
     redirect('/api/auth/oauth')
   }
 
   return (
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta charSet="UTF-8" />
-        <title>Cheart Script</title>
-      </head>
-      <body>
-        <div>
-          <h1>Welcome back, {username}!</h1>
-        </div>
-      </body>
-    </html>
-  );
+    <div className="container">
+      <script dangerouslySetInnerHTML={{ __html: 'console.log("page script loaded")' }} />
+      <header>
+        <h1>Cheart Script</h1>
+        <span className="user-badge">{username}</span>
+      </header>
+      <ScriptManager />
+    </div>
+  )
 }

@@ -29,8 +29,8 @@ export async function proxy(request: NextRequest) {
       },{status: 401, statusText: 'Unauthorized'})
     }else {
       const response = NextResponse.next();
-      response.cookies.set('authToken', authToken, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7, path: '/'})
-      response.cookies.set('username', username, {secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7, path: '/'})
+      response.cookies.set('authToken', authToken, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7})
+      response.cookies.set('username', username, {secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7})
       return response;
     }
   }
@@ -48,7 +48,7 @@ export async function proxy(request: NextRequest) {
           state: state,
           scope: scope,
       });
-      response.cookies.set('oauthState', state, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 5, path: '/'})
+      response.cookies.set('oauthState', state, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 5})
       response.headers.set('Location', `https://github.com/login/oauth/authorize?${params.toString()}`)
 
       return response
@@ -105,10 +105,9 @@ export const config = {
   matcher: [
     /*
      * 匹配所有请求路径，排除以下:
-     * - _next/static (静态文件)
-     * - _next/image (图片优化文件)
+     * - _next (所有 Next.js 内部路径，包括 HMR WebSocket)
      * - favicon.ico, sitemap.xml, robots.txt (元数据文件)
      */
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!_next|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 }

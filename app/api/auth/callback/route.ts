@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
             'Location': '/'
         }
     })
-    response.cookies.set('authToken', jwt, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7, path: '/'})
-    response.cookies.set('username',username, {secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7, path: '/'})
+    response.cookies.set('authToken', jwt, {httpOnly:true, secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7})
+    response.cookies.set('username',username, {secure: true, sameSite: 'lax', maxAge: 60 * 60 * 24 * 7})
     response.cookies.delete('oauthState')
 
     return response;

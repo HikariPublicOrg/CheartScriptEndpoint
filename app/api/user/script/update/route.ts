@@ -43,6 +43,20 @@ export async function POST(request: Request) {
     )
   }
 
+  if (version.length > 10) {
+    return Response.json(
+      { error: 'Version must be 10 characters or less' },
+      { status: 400 }
+    )
+  }
+
+  if (desc && desc.length > 10) {
+    return Response.json(
+      { error: 'Description must be 10 characters or less' },
+      { status: 400 }
+    )
+  }
+
   // 上传脚本数据到 bucket
   const scriptData = JSON.stringify({
     name: script_name,
@@ -67,7 +81,9 @@ export async function POST(request: Request) {
     .upsert({
       script_name,
       script_author: username,
-    }, { onConflict: 'script_name,script_author' })
+      desc,
+      version,
+    }, { onConflict: 'script_name' })
     .select()
 
   if (error) {
