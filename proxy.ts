@@ -91,7 +91,7 @@ export async function proxy(request: NextRequest) {
       }
       return new NextResponse(scriptResponse.body, {
         headers: {
-          'Content-Type': 'text/plain'
+          'Content-Type': 'text/plain;charset=utf-8'
         }
       })
     }catch(error) {
