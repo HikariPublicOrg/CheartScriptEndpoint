@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import { decryptData } from './app/api/username-secret'
 import { env } from 'process'
+import { createClient } from '@/utils/supabase/middleware'
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // Supabase session refresh
+  const supabaseResponse = createClient(request)
 
   if(pathname.startsWith('/api/user')) {
     const authToken = request.cookies.get('authToken')?.value
@@ -64,7 +68,37 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  if(pathname.startsWith('/api/getscript')){
+    const searchParams = request.nextUrl.searchParams
+    const scriptName = searchParams.get('name')
+    const author = searchParams.get('author')
+
+    if(!scriptName || !author) {
+      return NextResponse.json({
+        message: 'Missing name or author parameter'
+      }, {status: 400, statusText: 'Bad Request'})
+    }
+
+    const bucket = (env as any).BUCKET_BASE_URL
+    const scriptUrl = `${bucket}/${author}/${scriptName}.json`
+
+    try {
+      const scriptResponse = await fetch(scriptUrl)
+      if(!scriptResponse.ok) {
+        return NextResponse.json({
+          message: 'Script not found'
+        }, {status: 404, statusText: 'Not Found'})
+      }
+      const scriptData = await scriptResponse.json()
+      return NextResponse.json(scriptData)
+    }catch(error) {
+      return NextResponse.json({
+        message: 'Error fetching script'
+      }, {status: 500, statusText: 'Internal Server Error'})
+    }
+  }
+
+  return supabaseResponse
 }
 
 export const config = {
