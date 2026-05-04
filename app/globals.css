@@ -285,3 +285,14 @@ header h1 {
   background: #333;
   color: #fff;
 }
+
+.btn-install {
+  background: #166534;
+  color: #22c55e;
+  border-color: #166534;
+}
+
+.btn-install:hover {
+  background: #14532d;
+  color: #4ade80;
+}

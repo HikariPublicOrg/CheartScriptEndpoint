@@ -83,8 +83,27 @@ export default function ScriptManager() {
     setStatus(null)
   }
 
-  function handleDownload(_script: Script) {
-    // TODO: implement download logic
+  async function handleDownload(script: Script) {
+    try {
+      const encodedName = encodeURIComponent(script.script_name)
+      const encodedAuthor = encodeURIComponent(script.script_author)
+      const res = await fetch(`/api/getscript?name=${encodedName}&author=${encodedAuthor}`)
+      if (!res.ok) throw new Error('Failed to fetch script')
+      const data = await res.json()
+      const blob = new Blob([data.script], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${script.script_name}.bsh`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (_err) {
+      setStatus({ type: 'error', message: 'Download failed' })
+    }
+  }
+
+  function handleInstall(_script: Script) {
+    // TODO: implement install logic
   }
 
   const [dragging, setDragging] = useState(false)
@@ -196,14 +215,24 @@ export default function ScriptManager() {
                     <span className="script-author">by {s.script_author}</span>
                     {s.desc && <span className="script-desc">{s.desc}</span>}
                   </div>
-                  <button
-                    type="button"
-                    className="btn btn-small"
-                    onClick={() => handleDownload(s)}
-                    disabled={loading}
-                  >
-                    Download
-                  </button>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      type="button"
+                      className="btn btn-small"
+                      onClick={() => handleDownload(s)}
+                      disabled={loading}
+                    >
+                      Download
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-small btn-install"
+                      onClick={() => handleInstall(s)}
+                      disabled={loading}
+                    >
+                      Install
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
