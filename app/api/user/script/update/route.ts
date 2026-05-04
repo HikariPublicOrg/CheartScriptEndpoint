@@ -58,16 +58,10 @@ export async function POST(request: Request) {
   }
 
   // 上传脚本数据到 bucket
-  const scriptData = JSON.stringify({
-    name: script_name,
-    script: content,
-    author: username,
-    version,
-    description: desc,
-  })
+  const scriptData = content
   const { error: uploadError } = await supabase.storage
     .from('cheart-script')
-    .upload(`${username}/${script_name}.json`, new Blob([scriptData], { type: 'application/json' }), {
+    .upload(`${username}/${script_name}.bsh`, new Blob([scriptData], { type: 'text/plain;charset=UTF-8' }), {
       upsert: true,
     })
 
@@ -75,7 +69,6 @@ export async function POST(request: Request) {
     return Response.json({ error: uploadError.message }, { status: 500 })
   }
 
-  // 只存 script_name 和 script_author 到表
   const { data, error } = await supabase
     .from('scripts')
     .upsert({

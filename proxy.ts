@@ -80,7 +80,7 @@ export async function proxy(request: NextRequest) {
     }
 
     const bucket = (env as any).BUCKET_BASE_URL
-    const scriptUrl = `${bucket}/${author}/${scriptName}.json`
+    const scriptUrl = `${bucket}/${author}/${scriptName}.bsh`
 
     try {
       const scriptResponse = await fetch(scriptUrl)
