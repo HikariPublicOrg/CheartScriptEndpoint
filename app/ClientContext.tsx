@@ -20,7 +20,7 @@ export function ClientProvider({ children }: { children: ReactNode }) {
 
   async function check() {
     try {
-      const res = await fetch('/api/client/health')
+      const res = await fetch('http://localhost:8953/health')
       if (!res.ok) throw new Error('offline')
       const data = await res.json()
       setOnline(true)

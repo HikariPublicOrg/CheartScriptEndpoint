@@ -67,7 +67,7 @@ export default function ScriptManager() {
     await Promise.all(
       scripts.map(async (s) => {
         try {
-          const res = await fetch(`/api/client/check-script?name=${encodeURIComponent(s.script_name)}.bsh`)
+          const res = await fetch(`http://localhost:8953/check-script?name=${encodeURIComponent(s.script_name)}.bsh`)
           const data = await res.json()
           if (data.exists) installed.add(s.script_name)
         } catch {
@@ -83,11 +83,11 @@ export default function ScriptManager() {
     setStatus(null)
     try {
       const url = `${BUCKET_BASE}/${encodeURIComponent(script.script_author)}/${encodeURIComponent(script.script_name)}.bsh`
-      const res = await fetch(`/api/client/add-script?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(script.script_name)}.bsh`)
+      const res = await fetch(`http://localhost:8953/add-script?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(script.script_name)}.bsh`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Install failed')
 
-      await fetch('/api/client/reload-script')
+      await fetch('http://localhost:8953/reload-script')
       setInstalledScripts(prev => new Set(prev).add(script.script_name))
       setStatus({ type: 'success', message: `Installed "${script.script_name}"` })
     } catch (err) {
@@ -101,11 +101,11 @@ export default function ScriptManager() {
     setLoading(true)
     setStatus(null)
     try {
-      const res = await fetch(`/api/client/delete-script?name=${encodeURIComponent(script.script_name)}.bsh`)
+      const res = await fetch(`http://localhost:8953/delete-script?name=${encodeURIComponent(script.script_name)}.bsh`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Delete failed')
 
-      await fetch('/api/client/reload-script')
+      await fetch('http://localhost:8953/reload-script')
       setInstalledScripts(prev => {
         const next = new Set(prev)
         next.delete(script.script_name)
