@@ -89,8 +89,11 @@ export async function proxy(request: NextRequest) {
           message: 'Script not found'
         }, {status: 404, statusText: 'Not Found'})
       }
-      const scriptData = await scriptResponse.json()
-      return NextResponse.json(scriptData)
+      return new NextResponse(scriptResponse.body, {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
     }catch(error) {
       return NextResponse.json({
         message: 'Error fetching script'
