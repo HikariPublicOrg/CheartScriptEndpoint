@@ -18,8 +18,8 @@ export default async function Home() {
         <header>
           <h1>Cheart Script</h1>
           <div className="header-badges">
-            <span className="user-badge">{username}</span>
             <HealthCheck />
+            <span className="user-badge">{username}</span>
           </div>
         </header>
         <ScriptManager />
