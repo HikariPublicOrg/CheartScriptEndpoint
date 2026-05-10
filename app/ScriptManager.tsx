@@ -368,6 +368,7 @@ export default function ScriptManager() {
                   value={scriptName}
                   onChange={e => setScriptName(e.target.value)}
                   placeholder="my-script"
+                  maxLength={40}
                   disabled={editing}
                   required
                 />
@@ -390,7 +391,7 @@ export default function ScriptManager() {
                 value={desc}
                 onChange={e => setDesc(e.target.value)}
                 placeholder="What does this script do?"
-                maxLength={10}
+                maxLength={100}
               />
             </div>
             <div className="form-group">

@@ -15,6 +15,13 @@ export async function POST(request: Request) {
     )
   }
 
+  if (script_name.length > 40) {
+    return Response.json(
+      { error: 'Script name must be 40 characters or less' },
+      { status: 400 }
+    )
+  }
+
   const supabase = createClient(cookieStore)
 
   // content 为空时删除脚本
@@ -50,9 +57,9 @@ export async function POST(request: Request) {
     )
   }
 
-  if (desc && desc.length > 10) {
+  if (desc && desc.length > 100) {
     return Response.json(
-      { error: 'Description must be 10 characters or less' },
+      { error: 'Description must be 100 characters or less' },
       { status: 400 }
     )
   }
