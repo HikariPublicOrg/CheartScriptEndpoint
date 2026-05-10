@@ -6,6 +6,7 @@ import { useClient } from './ClientContext'
 export default function HealthCheck() {
   const { online, clientUsername } = useClient()
   const [showGuide, setShowGuide] = useState(false)
+  const [showHint, setShowHint] = useState(true)
 
   return (
     <>
@@ -16,6 +17,13 @@ export default function HealthCheck() {
       >
         {online && clientUsername ? clientUsername : 'Offline'}
       </span>
+
+      {!online && showHint && (
+        <span className="connect-hint" onClick={() => setShowGuide(true)}>
+          How to connect Cheart client
+          <button className="hint-close" onClick={e => { e.stopPropagation(); setShowHint(false) }}>&times;</button>
+        </span>
+      )}
 
       {showGuide && (
         <div className="modal-overlay" onClick={() => setShowGuide(false)}>
