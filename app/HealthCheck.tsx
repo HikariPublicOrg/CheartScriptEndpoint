@@ -10,6 +10,14 @@ export default function HealthCheck() {
 
   return (
     <>
+
+      {!online && showHint && (
+        <span className="connect-hint" onClick={() => setShowGuide(true)}>
+          Connect Cheart Client
+          <button className="hint-close" onClick={e => { e.stopPropagation(); setShowHint(false) }}>&times;</button>
+        </span>
+      )}
+
       <span
         className={`health-badge ${online ? 'online' : 'offline'}`}
         onClick={() => !online && setShowGuide(true)}
@@ -17,13 +25,6 @@ export default function HealthCheck() {
       >
         {online && clientUsername ? clientUsername : 'Offline'}
       </span>
-
-      {!online && showHint && (
-        <span className="connect-hint" onClick={() => setShowGuide(true)}>
-          How to connect Cheart client
-          <button className="hint-close" onClick={e => { e.stopPropagation(); setShowHint(false) }}>&times;</button>
-        </span>
-      )}
 
       {showGuide && (
         <div className="modal-overlay" onClick={() => setShowGuide(false)}>
