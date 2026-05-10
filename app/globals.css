@@ -287,10 +287,6 @@ header h1 {
 .script-desc {
   font-size: 13px;
   color: #888;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 400px;
 }
 
 .script-date {
@@ -331,4 +327,103 @@ header h1 {
 .btn-delete:hover {
   background: #991b1b;
   color: #f87171;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #141414;
+  border: 1px solid #333;
+  border-radius: 12px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #222;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.step-text {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.6;
+  padding-top: 3px;
+}
+
+.step-text code {
+  background: #1a1a1a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.step-text a {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.step-text a:hover {
+  color: #93bbfd;
 }

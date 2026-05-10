@@ -1,0 +1,9 @@
+Step1. 下载 HttpServer "Download Link"(https://ygdprjzwyhlwezekylfd.supabase.co/storage/v1/object/public/cheart-script/SakuraNiroku/httpserver.bsh),
+
+Step2. 在cheart客户端中输入.script folder打开脚本文件夹
+
+Step3. 将httpserver.bsh拖入脚本文件夹
+
+Step4. 在cheart客户端中输入.script reload
+
+Step5. 在clickgui中打开httpserver模块。
